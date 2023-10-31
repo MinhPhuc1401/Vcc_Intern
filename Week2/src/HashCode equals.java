@@ -39,9 +39,9 @@ public class HashSetExample {
         Set<Person> personSet = new HashSet<>();
 
         // Thêm các đối tượng Person vào HashSet
-        Person person1 = new Person("Alice", 30);
-        Person person2 = new Person("Bob", 25);
-        Person person3 = new Person("Alice", 30); // Trùng lặp với person1
+        Person person1 = new Person("Phuc", 21);
+        Person person2 = new Person("Nga", 20);
+        Person person3 = new Person("Phuc", 21); // Trùng lặp với person1
 
         personSet.add(person1);
         personSet.add(person2);

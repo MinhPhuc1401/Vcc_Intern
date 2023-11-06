@@ -1,13 +1,20 @@
-import org.json.JSONObject;
+import com.google.gson.Gson;
+
+class Student {
+    public String name;
+    public int age;
+    Student(String name, int age){
+        this.name = name;
+        this.age = age;
+    }
+}
 
 public class JSONExample {
     public static void main(String[] args) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("name", "Phuc");
-        jsonObject.put("age", 21);
-        jsonObject.put("city", "Hai Duong");
-
-        String jsonString = jsonObject.toString();
-        System.out.println("JSON String: " + jsonString);
+        Student student = new Student("Phuc", 21);
+        Gson gson = new Gson();
+        
+        String jsonString = gson.toJson(student);
+        System.out.println(jsonString);
     }
 }

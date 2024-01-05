@@ -76,3 +76,48 @@
 ## kill -9:
 - Kết thúc một tiến trình bằng cách sử dụng tùy chọn SIGKILL.
 - Ví dụ: kill -9 process_id (thay thế process_id bằng ID thực tế của tiến trình).
+
+# 2. Docker
+Docker là một nền tảng mã nguồn mở giúp bạn tự động triển khai, mở rộng và quản lý các ứng dụng trong môi trường container. Container là một cách đóng gói ứng dụng cùng với các phụ thuộc và cấu hình của nó, tạo ra một môi trường đảm bảo rằng ứng dụng sẽ chạy giống nhau trên mọi máy chủ và môi trường.
+
+# Khái niệm cơ bản
+
+## Docker Image:
+- Một hình ảnh là một bản đóng gói của một ứng dụng cùng với tất cả các phụ thuộc của nó.
+- Hình ảnh có thể được chia sẻ và sử dụng để triển khai container.
+## Docker Container:
+- Một container là một thể hiện thực của một hình ảnh.
+- Containers chia sẻ hạ tầng hệ điều hành với máy chủ và giữ cô lập ứng dụng.
+
+## Dockerfile:
+- Một tệp cấu hình văn bản định nghĩa cách một hình ảnh Docker nên được xây dựng.
+- Chứa các hướng dẫn để cài đặt và cấu hình ứng dụng cùng với các phụ thuộc.
+
+# Các lệnh Docker quan trọng:
+
+## docker pull:
+- Tải một hình ảnh từ Docker Hub hoặc một kho lưu trữ hình ảnh khác.
+- Ví dụ: docker pull ubuntu
+
+## docker build:
+- Xây dựng một hình ảnh từ Dockerfile.
+- Ví dụ: docker build -t my_image . (xây dựng hình ảnh và đặt tên là "my_image").
+## docker run:
+- Chạy một container từ một hình ảnh.
+- Ví dụ: docker run -d -p 8080:80 my_image (chạy container ẩn danh trên cổng 8080 và liên kết nó với cổng 80 trong container).
+
+## docker ps:
+- Hiển thị danh sách các container đang chạy.
+- Ví dụ: docker ps
+
+## docker exec:
+- Chạy một lệnh trong một container đang chạy.
+- Ví dụ: docker exec -it container_id /bin/bash (mở một phiên làm việc tương tác trong container).
+
+## docker stop:
+- Dừng một hoặc nhiều container đang chạy.
+- Ví dụ: docker stop container_id
+
+## docker-compose:
+- Một công cụ để định nghĩa và chạy nhiều container như một ứng dụng duy nhất.
+- Sử dụng tệp docker-compose.yml để định cấu hình.

@@ -178,11 +178,11 @@ Kiểm tra node02 đã được add vào chưa
 
 http://localhost:9870/dfshealth.html#tab-datanode
 
-![img](https://imgur.com/9IIsljj)
+![img](https://i.imgur.com/9IIsljj.jpeg)
 
 http://localhost:8088/cluster/nodes
 
-![img](https://imgur.com/gallery/9twHwkc)
+![img](https://i.imgur.com/9twHwkc.jpeg)
 
 
 

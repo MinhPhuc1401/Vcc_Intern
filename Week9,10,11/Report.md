@@ -188,6 +188,96 @@ http://localhost:8088/cluster/nodes
 - Tạo project với cấu trúc file 
 
 ![img](https://i.imgur.com/OTQJP7U.jpg)
+
+WordCount.java
+```cmd
+package com.hadoop.mapreduce;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+public class WordCount {
+	public static void main(String[] args) throws Exception {
+		String in = args[0];
+		String out = args[1];
+		
+		Configuration conf = new Configuration();
+		Job job = Job.getInstance(conf, "Word count");
+		
+		job.setJarByClass(WordCount.class);
+		job.setMapperClass(WCMapper.class);
+		job.setCombinerClass(WCReducer.class);
+		job.setReducerClass(WCReducer.class);
+		job.setOutputKeyClass(Text.class);
+		job.setOutputValueClass(IntWritable.class);
+		
+		FileInputFormat.addInputPath(job, new Path(in));
+		FileSystem fs = FileSystem.get(conf); // delete file output when it exists
+		if (fs.exists(new Path(out))) {
+			fs.delete(new Path(out), true);
+		}
+		
+		FileOutputFormat.setOutputPath(job, new Path(out));
+		System.exit(job.waitForCompletion(true) ? 0 : 1);
+	}
+}
+```
+WCMapper.java
+```cmd
+package com.hadoop.mapreduce;
+
+import java.io.IOException;
+import java.util.StringTokenizer;
+
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+public class WCMapper extends Mapper<Object, Text, Text, IntWritable>{
+	private final static IntWritable one = new IntWritable(1);
+	private Text word = new Text();
+
+	@Override
+	public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+		StringTokenizer itr = new StringTokenizer(value.toString());
+		while (itr.hasMoreTokens()) {
+			word.set(itr.nextToken());
+			context.write(word, one);
+		}
+	}
+}
+```
+WCReducer.java
+```cmd
+package com.hadoop.mapreduce;
+
+import java.io.IOException;
+
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer;
+
+public class WCReducer extends Reducer<Text, IntWritable, Text, IntWritable>{
+	private IntWritable result = new IntWritable();
+
+	@Override
+	public void reduce(Text key, Iterable<IntWritable> values, Context context)
+			throws IOException, InterruptedException {
+		int sum = 0;
+		for (IntWritable val : values) {
+			sum += val.get();
+		}
+		result.set(sum);
+		context.write(key, result);
+	}
+}
+```
 - Cài maven
 
 ![img](https://i.imgur.com/10jxygy.jpg)
@@ -273,7 +363,67 @@ $ hdfs dfs -cat /output/part-r-00000
 ```
 ![img](https://i.imgur.com/ddxV26P.jpg)
 
+## 2. Cài đặt Spark standalone, spark trên yarn
 
+### 2.1 Cài đặt Spark
+
+- Download spark và cài đặt
+```cmd
+$ wget https://dlcdn.apache.org/spark/spark-3.3.4/spark-3.3.4-bin-without-hadoop.tgz
+$ tar -xzvf spark-3.3.4-bin-without-hadoop.tgz 
+$ mv spark-3.3.4-bin-without-hadoop /lib/spark
+$ mkdir /lib/spark/logs
+$ chgrp hadoop -R /lib/spark
+$ chmod g+w -R /lib/spark
+```
+- Cấu hình các biến môi trường trong file ```/etc/bash.bashrc```
+```cmd
+export SPARK_HOME=/lib/spark
+export PATH=$PATH:$SPARK_HOME/bin
+```
+- Cập nhật biến môi trường
+```cmd
+$ source /etc/bash.bashrc
+```
+- Tạo file ```$SPARK_HOME/conf/spark-env.sh```
+```cmd
+cp $SPARK_HOME/conf/spark-env.sh.template $SPARK_HOME/conf/spark-env.sh
+```
+- Thêm cấu hình classpath vào file ```$SPARK_HOME/conf/spark-env.sh```
+```cmd
+export SPARK_DIST_CLASSPATH=$(hadoop classpath)
+```
+- Kiểm tra xem đã chạy được Spark ở YARN mode hay chưa:
+```cmd
+spark-shell
+```
+![img](https://i.imgur.com/sAFwwOA.jpg)
+
+##### 2.2.2 WordCount với Spark chạy trên YARN
+
+- Tạo file input
+```cmd
+$ nano WordCountSpark.txt
+# Nhập nội dung file
+$ hdfs dfs -copyFromLocal WordCountSpark.txt /input_spark
+```
+- Chạy spark: 
+```cmd
+$ spark-shell
+```
+- Chạy WordCount
+```scala
+val textFile = sc.textFile("hdfs://node01:9000/input_spark/WordCountSpark.txt")
+val counts = textFile.flatMap(line => line.split(" "))
+                 .map(word => (word, 1))
+                 .reduceByKey(_ + _)
+counts.saveAsTextFile("hdfs://node01:9000/output_spark/WCResultYarn")
+```
+- Kiểm tra kết quả
+
+![img](https://i.imgur.com/PKPuJYu.jpg)
+
+![img](https://i.imgur.com/fdHLXEG.jpg)
 
 
 

@@ -413,11 +413,12 @@ $ spark-shell
 ```
 - Chạy WordCount
 ```scala
-val textFile = sc.textFile("hdfs://node01:9000/input_spark/WordCountSpark.txt")
-val counts = textFile.flatMap(line => line.split(" "))
-                 .map(word => (word, 1))
-                 .reduceByKey(_ + _)
-counts.saveAsTextFile("hdfs://node01:9000/output_spark/WCResultYarn")
+$ var linesRDD = sc.textFile("hdfs://node01:9000/input_spark/WordCountSpark.txt")
+$ var wordsRDD = linesRDD.flatMap(_.split(" "))
+$ var wordsKvRdd = wordsRDD.map((_, 1))
+$ var wordCounts = wordsKvRdd.reduceByKey(_ + _ )
+$ wordCounts.collect().foreach(println)
+$ wordCounts.saveAsTextFile("hdfs://node01:9000/output_spark/WCResultYarn")
 ```
 - Kiểm tra kết quả
 

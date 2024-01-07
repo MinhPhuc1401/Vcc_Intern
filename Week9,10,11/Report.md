@@ -184,5 +184,97 @@ http://localhost:8088/cluster/nodes
 
 ![img](https://i.imgur.com/9twHwkc.jpeg)
 
+### 1.7. Chạy chương trình MapReduce
+- Tạo project với cấu trúc file 
+
+![img](https://i.imgur.com/OTQJP7U.jpg)
+- Cài maven
+
+![img](https://i.imgur.com/10jxygy.jpg)
+- Build file jar
+Tạo file pom.xml
+```cmd
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>wordcount</groupId>
+	<artifactId>wordcount</artifactId>
+	<version>V1</version>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.hadoop</groupId>
+			<artifactId>hadoop-common</artifactId>
+			<version>2.9.0</version>
+			<!--<scope>provided</scope> -->
+		</dependency>
+		<dependency>
+			<groupId>org.apache.hadoop</groupId>
+			<artifactId>hadoop-hdfs</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-mapreduce-client-core -->
+		<dependency>
+			<groupId>org.apache.hadoop</groupId>
+			<artifactId>hadoop-mapreduce-client-core</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.hadoop</groupId>
+			<artifactId>hadoop-mapreduce-client-jobclient</artifactId>
+			<version>2.9.0</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>src</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<release>15</release>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+```
+- Chạy lệnh
+```cmd
+$ mvn clean package
+```
+![img](https://i.imgur.com/utV2KeL.jpg)
+- Chuẩn bị dữ liệu
+Copy file từ local lên HDFS
+```cmd
+$ hdfs dfs -copyFromLocal input.txt /
+```
+Kiểm tra xem file input.txt
+```cmd
+$ hdfs dfs -ls /
+```
+- Chạy chương trình
+```cmd
+hadoop jar target/wordcount-V1.jar com.hadoop.mapreduce.WordCount hdfs://node01:9000/input.txt hdfs://node01:9000/output
+```
+![img](https://i.imgur.com/wrVuo63.jpg)
+Xem output
+```cmd
+$ hdfs dfs -cat /output/part-r-00000
+```
+![img](https://i.imgur.com/ddxV26P.jpg)
+
+
+
+
 
 

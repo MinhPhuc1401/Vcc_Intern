@@ -399,7 +399,7 @@ spark-shell
 ```
 ![img](https://i.imgur.com/sAFwwOA.jpg)
 
-##### 2.2.2 WordCount với Spark chạy trên YARN
+### 2.2 WordCount với Spark chạy trên YARN
 
 - Tạo file input
 ```cmd

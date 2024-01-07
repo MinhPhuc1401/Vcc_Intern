@@ -421,9 +421,9 @@ counts.saveAsTextFile("hdfs://node01:9000/output_spark/WCResultYarn")
 ```
 - Kiểm tra kết quả
 
-![img](https://i.imgur.com/PKPuJYu.jpg)
+![img](https://i.imgur.com/NnIXzwP.jpg)
 
-![img](https://i.imgur.com/fdHLXEG.jpg)
+![img](https://i.imgur.com/bQ7cJXW.jpg)
 
 
 
